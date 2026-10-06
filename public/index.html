@@ -3,314 +3,753 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VALTHERION ONLINE - A Guerra dos Reinos</title>
-  <!-- Fontes Medievais e Manuscrito -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=MedievalSharp&family=Metamorphous&display=swap" rel="stylesheet">
-  
+  <title>VALTHERION - A GUERRA DOS REINOS</title>
+  <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-diario: #1a1614;
-      --papel-pergaminho: #e2d1b3;
-      --papel-escuro: #2b231d;
-      --borda-ferro: #3d312a;
-      --dourado-velho: #c29b38;
-      --vermelho-sangue: #7a1c1c;
-      --verde-druida: #2d5a27;
-      --texto-pergaminho: #2a2118;
-      --texto-claro: #ded0be;
+      --bg-dark: #120e0c;
+      --panel-pergaminho: #e8dcc4;
+      --panel-pergaminho-dark: #3a2e26;
+      --border-medieval: #8a6d4b;
+      --gold: #d4af37;
+      --text-dark: #241a15;
+      --text-light: #e0d5c1;
+      --red-accent: #8b0000;
+      --green-accent: #2e5a1e;
+      --purple-accent: #4a154b;
     }
 
-    * {
-      box-sizing: border-box;
-      user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
 
     body {
-      background-color: var(--bg-diario);
-      background-image: 
-        radial-gradient(circle at 50% 50%, rgba(20, 15, 12, 0.8), rgba(10, 8, 6, 0.98)),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      color: var(--texto-claro);
+      background-color: var(--bg-dark);
+      background-image: radial-gradient(circle at 50% 50%, rgba(30, 22, 18, 0.9), rgba(10, 8, 6, 0.98));
+      color: var(--text-light);
       font-family: 'MedievalSharp', cursive, serif;
-      margin: 0;
-      padding: 15px;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* MENU LATERAL */
+    .sidebar {
+      width: 320px;
+      background: var(--panel-pergaminho-dark);
+      border-right: 3px double var(--border-medieval);
       display: flex;
       flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
+      padding: 15px;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.8);
+      z-index: 10;
     }
 
-    /* BANNER PRINCIPAL (FAIXA ESTILO MEDIEVAL) */
-    .banner-titulo {
-      position: relative;
-      background: linear-gradient(180deg, #5c1414 0%, #360a0a 100%);
-      border: 3px solid var(--dourado-velho);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.8), inset 0 0 15px rgba(0,0,0,0.6);
-      padding: 12px 40px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
+    .brand { border-bottom: 2px dashed var(--border-medieval); padding-bottom: 12px; margin-bottom: 12px; text-align: center; }
+    .brand h1 { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold); text-shadow: 1px 1px 2px #000; }
+    .brand p { font-size: 0.72rem; color: #b3a08d; letter-spacing: 2px; }
 
-    .banner-titulo h1 {
-      font-family: 'Cinzel Decorative', serif;
-      color: #f1d79e;
-      font-size: 2rem;
-      margin: 0;
-      text-shadow: 3px 3px 0px #000;
-      letter-spacing: 2px;
-    }
-
-    /* HUD RECURSOS (ESTILO INVENTÁRIO RPG) */
-    .hud-inventario {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      background: var(--papel-escuro);
-      border: 2px solid var(--dourado-velho);
-      padding: 10px 18px;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.7);
-      margin-bottom: 25px;
-      max-width: 1000px;
-      width: 100%;
-    }
-
-    .slot-recurso {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid #524034;
+    .player-status {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-medieval);
       border-radius: 6px;
-      padding: 6px 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1rem;
-      color: #e6d3be;
-    }
-
-    .slot-recurso .icone {
-      font-size: 1.3rem;
-    }
-
-    .slot-recurso b {
-      color: var(--dourado-velho);
-    }
-
-    /* DIÁRIO DE BORDO (PAINEL CENTRAL PERGAMINHO) */
-    .caderno-container {
-      background: var(--papel-pergaminho);
-      color: var(--texto-pergaminho);
-      border: 6px solid var(--borda-ferro);
-      border-radius: 12px;
-      box-shadow: inset 0 0 50px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.9);
-      padding: 25px;
-      max-width: 1100px;
-      width: 100%;
-      position: relative;
-    }
-
-    .caderno-cabecalho {
-      border-bottom: 2px dashed #8c7158;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .caderno-cabecalho h2 {
-      font-family: 'Metamorphous', cursive;
-      margin: 0;
-      font-size: 1.5rem;
-      color: var(--vermelho-sangue);
-    }
-
-    /* GRID DE CARDS 2D (ESTILO MONSTROS/UNIDADES) */
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 20px;
-    }
-
-    /* CARD INDIVIDUAL */
-    .card-2d {
-      background: #ebdcc1;
-      border: 2px solid #6b5340;
-      border-radius: 8px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      box-shadow: 3px 3px 10px rgba(0,0,0,0.25);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .card-2d:hover {
-      transform: translateY(-4px);
-      box-shadow: 5px 8px 18px rgba(0,0,0,0.4);
-      border-color: var(--vermelho-sangue);
-    }
-
-    /* FRAME DA ILUSTRAÇÃO 2D */
-    .frame-ilustracao {
-      width: 90px;
-      height: 90px;
-      background: #2b231d;
-      border: 3px solid var(--dourado-velho);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
-      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
-      margin-bottom: 10px;
-    }
-
-    .titulo-card {
-      font-family: 'Metamorphous', cursive;
-      font-size: 1.15rem;
-      font-weight: bold;
-      color: var(--vermelho-sangue);
-      margin: 4px 0;
-    }
-
-    .tag-terreno {
-      font-size: 0.8rem;
-      background: #d1bd9b;
-      border: 1px solid #947e62;
-      padding: 2px 8px;
-      border-radius: 10px;
+      padding: 8px 12px;
       margin-bottom: 12px;
-      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .player-status .name { color: var(--gold); font-weight: bold; }
+    .player-status .faction { font-size: 0.75rem; color: #c4b5a5; }
+    .player-status .turn-info { margin-top: 6px; font-size: 0.8rem; color: #a3d99b; }
+
+    .nav-menu { display: flex; flex-direction: column; gap: 4px; overflow-y: auto; flex: 1; padding-right: 4px; }
+    .nav-item {
+      padding: 8px 10px; border-radius: 4px; color: var(--text-light);
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; transition: background 0.2s; border: 1px solid transparent;
+    }
+    .nav-item:hover, .nav-item.active { background: var(--border-medieval); color: #fff; border-color: var(--gold); }
+
+    /* ÁREA PRINCIPAL */
+    .main-content { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+
+    .top-header {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--panel-pergaminho); color: var(--text-dark);
+      padding: 12px 20px; border-radius: 6px; border: 2px double var(--border-medieval);
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+    .top-header h2 { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--red-accent); }
+
+    .action-buttons { display: flex; gap: 10px; }
+    .btn-medieval {
+      background: linear-gradient(180deg, #3a2e26 0%, #1f1814 100%);
+      color: var(--gold); border: 1px solid var(--gold);
+      padding: 6px 14px; font-family: 'MedievalSharp', cursive; font-size: 0.85rem;
+      border-radius: 4px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-medieval:hover { background: var(--border-medieval); color: #fff; transform: translateY(-1px); }
+
+    /* HUD RECURSOS */
+    .resources-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
+    .res-card {
+      background: var(--panel-pergaminho); color: var(--text-dark);
+      border: 2px solid var(--border-medieval); padding: 8px 10px; border-radius: 6px;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.3); text-align: center;
+    }
+    .res-card label { font-size: 0.72rem; color: #574232; font-weight: bold; display: block; }
+    .res-card span { font-size: 1.1rem; font-weight: bold; color: var(--red-accent); }
+
+    /* ABAS & CARDS */
+    .tab-content { display: none; flex-direction: column; gap: 15px; }
+    .tab-content.active { display: flex; }
+
+    .section-box {
+      background: var(--panel-pergaminho); color: var(--text-dark);
+      border: 2px solid var(--border-medieval); border-radius: 6px; padding: 15px;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.4);
+    }
+    .section-box h3 {
+      font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--red-accent);
+      border-bottom: 2px dashed var(--border-medieval); padding-bottom: 6px; margin-bottom: 10px;
     }
 
-    .atributos-list {
-      width: 100%;
-      border-top: 1px solid #a89178;
-      border-bottom: 1px solid #a89178;
-      padding: 8px 0;
-      margin-bottom: 12px;
-      font-size: 0.9rem;
+    .warn-box { background: #edd3a4; border: 1px solid var(--border-medieval); padding: 10px; border-radius: 4px; font-size: 0.82rem; margin-bottom: 10px; color: #3a2e26; }
+    .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    .btn-action {
+      background: var(--green-accent); color: white; border: none; padding: 6px 12px;
+      font-family: 'MedievalSharp', cursive; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+    }
+    .btn-action:hover { background: #1e3d14; }
+
+    .input-medieval {
+      padding: 6px 10px; border: 1px solid var(--border-medieval); background: #fdf8ef;
+      font-family: 'MedievalSharp', cursive; border-radius: 4px; font-size: 0.85rem; width: 100%;
     }
 
-    .linha-attr {
-      display: flex;
-      justify-content: space-between;
-      margin: 4px 0;
-    }
+    .rec-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; text-align: left; }
+    .rec-table th { background: #3a2e26; color: var(--gold); padding: 8px; border: 1px solid var(--border-medieval); }
+    .rec-table td { padding: 8px; border: 1px solid var(--border-medieval); background: #f2e6d0; color: var(--text-dark); }
 
-    /* BOTAO ESTILO SELO/MEDIEVAL */
-    .btn-acao {
-      background: linear-gradient(180deg, #7a1c1c 0%, #4a0d0d 100%);
-      color: #f1d79e;
-      border: 2px solid var(--dourado-velho);
-      font-family: 'MedievalSharp', cursive;
-      font-size: 0.95rem;
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
-      transition: background 0.2s;
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+    .building-card {
+      background: #f4ebd9; border: 2px solid var(--border-medieval); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
     }
+    .building-card h4 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--red-accent); border-bottom: 1px dashed var(--border-medieval); padding-bottom: 4px; }
+    .building-card .bonus-text { font-size: 0.85rem; color: var(--green-accent); font-weight: bold; }
+    .building-card .cost-text { font-size: 0.78rem; color: #574232; }
 
-    .btn-acao:hover {
-      background: linear-gradient(180deg, #962424 0%, #5e1111 100%);
+    .general-card {
+      background: #f4ebd9; border: 2px solid var(--border-medieval); border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 6px;
     }
+    .general-card h4 { font-family: 'Cinzel', serif; color: var(--red-accent); border-bottom: 1px dashed var(--border-medieval); padding-bottom: 4px; }
+    .general-card .faction-tag { font-size: 0.75rem; background: #3a2e26; color: var(--gold); padding: 2px 6px; border-radius: 3px; display: inline-block; width: fit-content; }
+    .general-card .ability { font-size: 0.8rem; color: var(--purple-accent); font-weight: bold; }
 
-    .btn-acao:active {
-      transform: scale(0.98);
-    }
+    .filter-btn-group { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .filter-btn { background: #3a2e26; color: var(--gold); border: 1px solid var(--border-medieval); padding: 4px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; }
+    .filter-btn.active { background: var(--gold); color: #000; font-weight: bold; }
   </style>
 </head>
 <body>
 
-  <!-- BANNER TITULO -->
-  <div class="banner-titulo">
-    <h1>⚔️ VALTHERION ONLINE ⚔️️</h1>
-  </div>
-
-  <!-- HUD INVENTARIO RECURSOS -->
-  <div class="hud-inventario">
-    <div class="slot-recurso"><span class="icone">⚡</span> AP: <b id="ap-val">5/5</b></div>
-    <div class="slot-recurso"><span class="icone">🪙</span> Ouro: <b id="ouro-val">500</b></div>
-    <div class="slot-recurso"><span class="icone">🌾</span> Comida: <b id="comida-val">600</b></div>
-    <div class="slot-recurso"><span class="icone">🪵</span> Madeira: <b id="madeira-val">300</b></div>
-    <div class="slot-recurso"><span class="icone">⛓️</span> Ferro: <b id="ferro-val">200</b></div>
-    <div class="slot-recurso"><span class="icone">🔮</span> Arcana: <b id="arcana-val">100</b></div>
-  </div>
-
-  <!-- DIÁRIO DE BORDO -->
-  <div class="caderno-container">
-    <div class="caderno-cabecalho">
-      <h2>📜 Códice de Recrutamento & Bestiário</h2>
-      <span>Turno Vigente: <b>01</b></span>
+  <!-- MENU LATERAL -->
+  <div class="sidebar">
+    <div class="brand">
+      <h1>VALTHERION</h1>
+      <p>A GUERRA DOS REINOS</p>
     </div>
 
-    <!-- CARDS DE UNIDADES 2D -->
-    <div class="grid-cards">
-
-      <!-- Card: Infantaria -->
-      <div class="card-2d">
-        <div class="frame-ilustracao">⚔️</div>
-        <div class="titulo-card">Guarda de Elite</div>
-        <div class="tag-terreno">🌾 Planície (+15%)</div>
-        <div class="atributos-list">
-          <div class="linha-attr"><span>Tropa:</span> <b>30 Unidades</b></div>
-          <div class="linha-attr"><span>Poder:</span> <b>⚔️ 30</b></div>
-          <div class="linha-attr"><span>Custo:</span> <b>🪙 60 | 🌾 30/t</b></div>
-        </div>
-        <button class="btn-acao" onclick="acaoGame('Recrutar Guarda')">Recrutar (1 AP)</button>
-      </div>
-
-      <!-- Card: Arqueiro -->
-      <div class="card-2d">
-        <div class="frame-ilustracao">🏹</div>
-        <div class="titulo-card">Patrulheiro Elfo</div>
-        <div class="tag-terreno">🌲 Florestas (+15%)</div>
-        <div class="atributos-list">
-          <div class="linha-attr"><span>Tropa:</span> <b>20 Unidades</b></div>
-          <div class="linha-attr"><span>Poder:</span> <b>⚔️ 22</b></div>
-          <div class="linha-attr"><span>Custo:</span> <b>🪙 70 | 🌾 20/t</b></div>
-        </div>
-        <button class="btn-acao" onclick="acaoGame('Recrutar Patrulheiro')">Recrutar (1 AP)</button>
-      </div>
-
-      <!-- Card: Minotauro -->
-      <div class="card-2d">
-        <div class="frame-ilustracao">🐂</div>
-        <div class="titulo-card">Minotauro de Aço</div>
-        <div class="tag-terreno">⛰️ Montanhas (+15%)</div>
-        <div class="atributos-list">
-          <div class="linha-attr"><span>Tropa:</span> <b>10 Unidades</b></div>
-          <div class="linha-attr"><span>Poder:</span> <b>⚔️ 35</b></div>
-          <div class="linha-attr"><span>Custo:</span> <b>🪙 150 | ⛓️ 50</b></div>
-        </div>
-        <button class="btn-acao" onclick="acaoGame('Recrutar Minotauro')">Recrutar (1 AP)</button>
-      </div>
-
-      <!-- Card: Dragão -->
-      <div class="card-2d">
-        <div class="frame-ilustracao">🐉</div>
-        <div class="titulo-card">Dragão Lendário</div>
-        <div class="tag-terreno">🌋 Vulcânico (+15%)</div>
-        <div class="atributos-list">
-          <div class="linha-attr"><span>Estoque:</span> <b>1 Geral</b></div>
-          <div class="linha-attr"><span>Poder:</span> <b>⚔️ 100</b></div>
-          <div class="linha-attr"><span>Custo:</span> <b>🪙 1000 | 🔮 100</b></div>
-        </div>
-        <button class="btn-acao" onclick="acaoGame('Invocar Dragão')">Invocar (1 AP)</button>
-      </div>
-
+    <div class="player-status">
+      <div class="name">📍 Comandante</div>
+      <div class="faction">Nharok • Necromancia</div>
+      <div class="turn-info">Turno 1 • ☀ Dia • Limpo<br>⚡ AP: 5/5 | 🔮 Arcanum: <span id="arcanum-hud">100</span></div>
     </div>
+
+    <div class="nav-menu">
+      <div class="nav-item active" onclick="switchView('construcoes')">🏰 Construções Militares</div>
+      <div class="nav-item" onclick="switchView('santuario')">🐺 Santuário das Bestas</div>
+      <div class="nav-item" onclick="switchView('calculadora')">⚔️ Calculadora de Poder (9 Etapas)</div>
+      <div class="nav-item" onclick="switchView('generais')">👤 Generais & Experiência</div>
+      <div class="nav-item" onclick="switchView('locais')">🌍 Locais Favoráveis</div>
+      <div class="nav-item" onclick="switchView('logistica')">🚚 Logística & Comida</div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="main-content">
+
+    <div class="top-header">
+      <h2 id="page-title">Construções Militares</h2>
+      <div class="action-buttons">
+        <button class="btn-medieval" onclick="proximoTurno()">Passar Turno</button>
+      </div>
+    </div>
+
+    <!-- HUD RECURSOS -->
+    <div class="resources-grid">
+      <div class="res-card"><label>🪙 Ouro</label><span id="hud-ouro">1000</span></div>
+      <div class="res-card"><label>🌾 Comida</label><span id="hud-comida">1000</span></div>
+      <div class="res-card"><label>🪵 Madeira</label><span id="hud-madeira">500</span></div>
+      <div class="res-card"><label>⛓️ Ferro</label><span id="hud-ferro">300</span></div>
+      <div class="res-card"><label>🔮 Arcanum</label><span>100</span></div>
+      <div class="res-card"><label>👑 Prestígio</label><span id="hud-prestigio">50</span></div>
+    </div>
+
+    <!-- ABA 1: CONSTRUÇÕES MILITARES -->
+    <div id="construcoes" class="tab-content active">
+      <div class="warn-box">
+        <b>🏰 CONSTRUÇÕES MILITARES — VALTHERION</b><br>
+        Multiplicadores de Evolução: Nível I (100%), Nível II (150%), Nível III (200%), Nível IV (300%), Nível V (450%).<br>
+        <b>Custos de Upgrade:</b> I→II (100 Ouro, 50 Madeira) | II→III (200 Ouro, 100 Madeira) | III→IV (350 Ouro, 150 Madeira, 50 Ferro) | IV→V (600 Ouro, 250 Madeira, 100 Ferro).
+      </div>
+
+      <div class="card-grid" id="buildings-grid">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- ABA 2: SANTUÁRIO DAS BESTAS -->
+    <div id="santuario" class="tab-content">
+      <div class="warn-box">
+        <b>🐺 SANTUÁRIO DAS BESTAS — VALTHERION</b><br>
+        Edificação indispensável para adestrar feras, evoluir criaturas míticas e convocar lendas territoriais.
+      </div>
+
+      <div class="grid-2col">
+        <div class="section-box">
+          <h3>🐺 Funções e Nível do Santuário</h3>
+          <ul style="font-size:0.85rem; line-height:1.8; padding-left:18px;">
+            <li>• Permitir recrutamento de feras</li>
+            <li>• Melhorar feras e criaturas míticas</li>
+            <li>• Preparar criaturas especiais</li>
+            <li>• Requisito indispensável para lendários (Nível III+)</li>
+          </ul>
+
+          <div style="margin-top:15px; padding:12px; background:#e2d2b5; border:1px solid var(--border-medieval); border-radius:4px;">
+            <p style="font-size:0.9rem;"><b>Status Atual do Santuário:</b> <span id="santuario-nivel-txt" style="color:var(--red-accent); font-weight:bold;">Nível I</span></p>
+            <p style="font-size:0.85rem; margin-top:4px;"><b>Bônus em Poder das Feras:</b> <span id="santuario-bonus-txt" style="color:var(--green-accent); font-weight:bold;">+0%</span></p>
+          </div>
+        </div>
+
+        <div class="section-box">
+          <h3>📈 Tabela de Progressão do Santuário</h3>
+          <table class="rec-table">
+            <thead>
+              <tr>
+                <th>Nível</th>
+                <th>Efeito & Poder das Feras</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><b>NÍVEL I</b></td><td>Permite recrutar feras base. (100% efeito base)</td></tr>
+              <tr><td><b>NÍVEL II</b></td><td><b>+10%</b> poder das feras. (150% efeito base)</td></tr>
+              <tr><td><b>NÍVEL III</b></td><td><b>+20%</b> poder das feras. (Requisito para Lendários 👑)</td></tr>
+              <tr><td><b>NÍVEL IV</b></td><td><b>+30%</b> poder das feras. (300% efeito base)</td></tr>
+              <tr><td><b>NÍVEL V</b></td><td><b>+45%</b> poder das feras. (450% efeito base)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section-box">
+        <h3>👑 Catálogo de Criaturas Lendárias & Requisitos Especializados</h3>
+        <p style="font-size:0.85rem; margin-bottom:10px;">Para recrutar criaturas lendárias, é necessário possuir <b>Santuário Nível III ou superior</b> e satisfazer requisitos de Território, Arcanum, Ouro ou Provas Especializadas:</p>
+        
+        <table class="rec-table">
+          <thead>
+            <tr>
+              <th>Criatura Lendária</th>
+              <th>Santuário Mín.</th>
+              <th>Requisitos Territoriais e Especiais</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>🐉 Dragão Vermelho Ancião</td>
+              <td>Nível III</td>
+              <td>Terras Vulcânicas, 200 Ouro, 50 Arcanum</td>
+              <td><button class="btn-action" onclick="recrutarLendario('Dragão Vermelho', 3, 200, 50)">Recrutar</button></td>
+            </tr>
+            <tr>
+              <td>🦅 Grifo Tempestuoso</td>
+              <td>Nível III</td>
+              <td>Ilhas Celestiais, 150 Ouro, 30 Prestígio</td>
+              <td><button class="btn-action" onclick="recrutarLendario('Grifo Tempestuoso', 3, 150, 0)">Recrutar</button></td>
+            </tr>
+            <tr>
+              <td>🌲 Behemoth Florestal</td>
+              <td>Nível IV</td>
+              <td>Árvore Ancestral, Prova do Caçador, 250 Ouro</td>
+              <td><button class="btn-action" onclick="recrutarLendario('Behemoth Florestal', 4, 250, 0)">Recrutar</button></td>
+            </tr>
+            <tr>
+              <td>☁️ Roc das Nuves</td>
+              <td>Nível III</td>
+              <td>Ilhas Celestiais, 180 Ouro, 40 Arcanum</td>
+              <td><button class="btn-action" onclick="recrutarLendario('Roc das Nuvens', 3, 180, 40)">Recrutar</button></td>
+            </tr>
+            <tr>
+              <td>🔥 Fênix Flamejante</td>
+              <td>Nível III</td>
+              <td>Terras Vulcânicas, 220 Ouro, 60 Arcanum</td>
+              <td><button class="btn-action" onclick="recrutarLendario('Fênix Flamejante', 3, 220, 60)">Recrutar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ABA 3: CALCULADORA DE PODER EM 9 ETAPAS -->
+    <div id="calculadora" class="tab-content">
+      <div class="section-box">
+        <h3>⚔️ Cálculo de Poder de Batalha (Engine de 9 Etapas)</h3>
+        <p style="font-size:0.82rem; margin-bottom:12px;">Monte seu exército base e ajuste os modificadores operacionais das 9 Etapas de Combate do Valtherion.</p>
+
+        <div class="grid-2col" style="margin-bottom:15px;">
+          <!-- ETAPA 1: COMPOSIÇÃO DE UNIDADES BASE -->
+          <div style="background:#f4ebd9; padding:12px; border:1px solid var(--border-medieval); border-radius:4px;">
+            <h4 style="font-family:'Cinzel', serif; color:var(--red-accent); border-bottom:1px dashed var(--border-medieval); padding-bottom:4px; margin-bottom:8px;">1️⃣ Etapa 1: Unidades & Poder Base</h4>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.8rem;">
+              <div>
+                <label>Soldados (1.0 poder):</label>
+                <input type="number" id="unit-soldado" class="input-medieval" value="100" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>Arqueiros (1.1 poder):</label>
+                <input type="number" id="unit-arqueiro" class="input-medieval" value="20" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>Cavaleiros (1.6 poder):</label>
+                <input type="number" id="unit-cavaleiro" class="input-medieval" value="10" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>Magos (2.0 poder):</label>
+                <input type="number" id="unit-mago" class="input-medieval" value="5" oninput="calcularCalculadoraCompleta()">
+              </div>
+            </div>
+
+            <div style="margin-top:10px; font-size:0.85rem; background:#edd3a4; padding:6px; border-radius:4px;">
+              <b>Poder Base Calculado:</b> <span id="out-poder-base" style="color:var(--red-accent); font-weight:bold;">152</span>
+            </div>
+          </div>
+
+          <!-- ETAPAS 2 A 8: MODIFICADORES SOMADOS -->
+          <div style="background:#f4ebd9; padding:12px; border:1px solid var(--border-medieval); border-radius:4px;">
+            <h4 style="font-family:'Cinzel', serif; color:var(--red-accent); border-bottom:1px dashed var(--border-medieval); padding-bottom:4px; margin-bottom:8px;">2️⃣ - 8️⃣ Etapas Modificadoras (%)</h4>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.78rem;">
+              <div>
+                <label>2️⃣ Contra-Unidades (%):</label>
+                <input type="number" id="mod-contra" class="input-medieval" value="10" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>3️⃣ Terreno Favorável (%):</label>
+                <input type="number" id="mod-terreno" class="input-medieval" value="15" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>4️⃣ General Especialista (%):</label>
+                <input type="number" id="mod-general" class="input-medieval" value="15" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>5️⃣ Estratégia (%):</label>
+                <input type="number" id="mod-estrategia" class="input-medieval" value="15" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>6️⃣ Moral do Exército (%):</label>
+                <input type="number" id="mod-moral" class="input-medieval" value="10" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div>
+                <label>7️⃣ Sinergias de Tropa (%):</label>
+                <input type="number" id="mod-sinergia" class="input-medieval" value="10" oninput="calcularCalculadoraCompleta()">
+              </div>
+              <div style="grid-column: span 2;">
+                <label>8️⃣ Condição Climática (%):</label>
+                <input type="number" id="mod-clima" class="input-medieval" value="-10" oninput="calcularCalculadoraCompleta()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 9: RESULTADO E REGRAS DE TETO -->
+        <div style="padding:12px; background:#edd3a4; border:2px solid var(--border-medieval); border-radius:6px;">
+          <h4 style="font-family:'Cinzel', serif; color:var(--red-accent); margin-bottom:6px;">9️⃣ Etapa 9: Poder Final & Resolução de Batalha</h4>
+
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <input type="checkbox" id="mod-lendario-chk" onchange="calcularCalculadoraCompleta()">
+            <label for="mod-lendario-chk" style="font-size:0.85rem;"><b>✨ Habilidade Lendária Ativa</b> (Ignora a trava teto de +60%)</label>
+          </div>
+
+          <div id="out-resultado-9etapas" style="font-size:0.88rem; line-height:1.6; color:#241a15;">
+            Calculando simulador...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 4: GENERAIS & XP -->
+    <div id="generais" class="tab-content">
+      <div class="section-box">
+        <h3>👤 Sistema de Generais Nomeados — Valtherion</h3>
+        <p style="font-size:0.82rem; margin-bottom:10px;">Generais alteram drasticamente o desempenho militar. Vitória = <b>+1 XP</b>. A cada 2 XP = <b>+5% na especialidade</b> (Máximo +15% adicional).</p>
+
+        <div class="filter-btn-group">
+          <button class="filter-btn active" onclick="filtrarGenerais('todos', this)">Todos</button>
+          <button class="filter-btn" onclick="filtrarGenerais('Nharok', this)">💀 Nharok</button>
+          <button class="filter-btn" onclick="filtrarGenerais('Aurelion', this)">🏰 Aurelion</button>
+          <button class="filter-btn" onclick="filtrarGenerais('Drakmor', this)">🐉 Drakmor</button>
+          <button class="filter-btn" onclick="filtrarGenerais('Outros', this)">🌑 Outros</button>
+        </div>
+
+        <div class="card-grid" id="generais-grid">
+          <!-- Renderizado dinamicamente via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 5: LOCAIS FAVORÁVEIS -->
+    <div id="locais" class="tab-content">
+      <div class="section-box">
+        <h3>🌍 Locais Favoráveis (Matriz Completa de Sinergia de Terreno)</h3>
+        <p style="font-size:0.82rem; margin-bottom:10px;">Cada unidade obtém bônus de combate ao lutar nos seus terrenos e territórios nativos.</p>
+
+        <table class="rec-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>Unidade / Tropa</th>
+              <th>Terreno Favorável</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- INFANTARIA -->
+            <tr><td><b>🛡️ Infantaria</b></td><td>Soldados, Lanceiros, Gladiadores</td><td>🌾 Planícies</td></tr>
+            <tr><td><b>🛡️ Infantaria</b></td><td>Espadachins, Guardas Reais, Guardas de Elite</td><td>🏰 Fortalezas</td></tr>
+            <tr><td><b>🛡️ Infantaria</b></td><td>Machadeiros</td><td>🌲 Florestas</td></tr>
+            <tr><td><b>🛡️ Infantaria</b></td><td>Escudeiros, Berserkers</td><td>⛰️ Montanhas</td></tr>
+            <tr><td><b>🛡️ Infantaria</b></td><td>Guerreiros Bárbaros</td><td>🌲 Florestas / ⛰️ Montanhas</td></tr>
+
+            <!-- DISTÂNCIA -->
+            <tr><td><b>🏹 Distância</b></td><td>Arqueiros, Caçadores, Arqueiros Élficos, Atiradores Élficos</td><td>🌲 Florestas</td></tr>
+            <tr><td><b>🏹 Distância</b></td><td>Besteiros</td><td>🏰 Fortalezas</td></tr>
+            <tr><td><b>🏹 Distância</b></td><td>Arqueiros Montados</td><td>🌾 Planícies</td></tr>
+            <tr><td><b>🏹 Distância</b></td><td>Atiradores</td><td>⛰️ Montanhas</td></tr>
+            <tr><td><b>🏹 Distância</b></td><td>Arqueiros Incendiários</td><td>🌋 Terras Vulcânicas</td></tr>
+
+            <!-- CAVALARIA -->
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavaleiros, Cavalaria Pesada, Lanceiros Montados</td><td>🌾 Planícies</td></tr>
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavalaria Leve</td><td>🏜️ Deserto / 🌾 Planícies</td></tr>
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavaleiros de Elite</td><td>🏰 Fortaleza / 🌾 Planícies</td></tr>
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavaleiros Bárbaros</td><td>🌲 Floresta / ⛰️ Montanhas</td></tr>
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavaleiros Élficos</td><td>🌲 Floresta</td></tr>
+            <tr><td><b>🐎 Cavalaria</b></td><td>Cavaleiros Espectrais</td><td>❄️ Terras Gélidas / 🌙 Noite</td></tr>
+
+            <!-- MAGIA -->
+            <tr><td><b>🔮 Magia</b></td><td>Magos de Fogo</td><td>🌋 Terras Vulcânicas</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Magos de Gelo</td><td>❄️ Terras Gélidas</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Magos de Raio</td><td>⚡ Templo do Trovão</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Curandeiros</td><td>🌳 Árvore Ancestral</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Druidas</td><td>🌲 Floresta</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Necromantes</td><td>💀 Reino dos Mortos</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Magos Sombrios</td><td>🌙 Reino Lunar</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Magos de Luz</td><td>🌾 Planícies</td></tr>
+            <tr><td><b>🔮 Magia</b></td><td>Feiticeiros, Arquimagos</td><td>🔮 Torre de Arcanum</td></tr>
+
+            <!-- FERAS -->
+            <tr><td><b>🐺 Feras</b></td><td>Lobos, Javalis, Ursos, Felinos</td><td>🌲 Floresta</td></tr>
+            <tr><td><b>🐺 Feras</b></td><td>Cavalos</td><td>🌾 Planícies</td></tr>
+            <tr><td><b>🐺 Feras</b></td><td>Águias</td><td>⛰️ Montanhas</td></tr>
+            <tr><td><b>🐺 Feras</b></td><td>Camelo</td><td>🏜️ Deserto</td></tr>
+            <tr><td><b>🐺 Feras</b></td><td>Crocodilos</td><td>🐊 Pântano</td></tr>
+
+            <!-- MÍTICOS -->
+            <tr><td><b>🐉 Míticos</b></td><td>Grifos</td><td>⛰️ Montanhas</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Wyverns, Fênix</td><td>🌋 Terras Vulcânicas</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Unicórnios</td><td>🌳 Árvore Ancestral</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Cães Infernais</td><td>🔥 Abismo Infernal</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Roc</td><td>☁️ Ilhas Celestiais</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Mamutes</td><td>❄️ Terras Gélidas</td></tr>
+            <tr><td><b>🐉 Míticos</b></td><td>Cavalo Espectral</td><td>💀 Reino dos Mortos</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ABA 6: LOGÍSTICA & COMIDA -->
+    <div id="logistica" class="tab-content">
+      <div class="section-box">
+        <h3>🚚 Sistema de Logística & Falta de Comida</h3>
+        <p style="font-size:0.85rem; margin-bottom:10px;">A sustentação do exército depende de comboios e depósitos de suprimentos ativos.</p>
+        
+        <table class="rec-table">
+          <thead>
+            <tr>
+              <th>Nível de Comida</th>
+              <th>Status do Exército</th>
+              <th>Penalidades de Combate & Mobilidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><b>🟢 50%+</b></td><td>Pleno Suprimento</td><td>Sem penalidades. Moral e eficácia máximas.</td></tr>
+            <tr><td><b>🟡 25% - 49%</b></td><td>Racionamento Leve</td><td>-5% Moral por turno.</td></tr>
+            <tr><td><b>🟠 1% - 24%</b></td><td>Escassez Severa</td><td>-15% Poder de Combate, -10% Mobilidade, -10% Moral.</td></tr>
+            <tr><td><b>🔴 0% Comida</b></td><td>Fome Prolongada</td><td><b>-25% Poder de Combate</b>, <b>-20% Mobilidade</b>, Bloqueia Marcha Forçada, Baixas contínuas por desnutrição.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    function acaoGame(nomeAcao) {
-      alert("Comando enviado ao servidor: " + nomeAcao);
+    // ESTADO RECURSOS
+    let ouro = 1000;
+    let comida = 1000;
+    let madeira = 500;
+    let ferro = 300;
+    let prestigios = 50;
+
+    // 10 CONSTRUÇÕES MILITARES COMPLETA COM NÍVEIS I A V
+    const buildings = [
+      { id: 'fortaleza', name: '🏰 Fortaleza', level: 1, scale: [30, 35, 40, 50, 65], unit: '% Defesa' },
+      { id: 'muralha', name: '🧱 Muralha', level: 1, scale: [20, 25, 30, 40, 55], unit: '% Defesa' },
+      { id: 'quartel', name: '🪖 Quartel', level: 1, scale: [2, 3, 4, 5, 7], unit: ' Recrutamentos' },
+      { id: 'estabulo', name: '🐎 Estábulo', level: 1, scale: [2, 3, 4, 5, 7], unit: ' Recrutamentos Cavalaria' },
+      { id: 'treinamento', name: '🏹 Campo de Treinamento', level: 1, scale: [5, 10, 15, 20, 30], unit: '% Treinamento' },
+      { id: 'arsenal', name: '⚔️ Arsenal', level: 1, scale: [3, 5, 8, 12, 15], unit: '% Poder Terrestre' },
+      { id: 'hospital', name: '🏥 Hospital Militar', level: 1, scale: [5, 8, 12, 16, 20], unit: '% Baixas' },
+      { id: 'vigia', name: '🏹 Torre de Vigia', level: 1, scale: [10, 15, 20, 30, 40], unit: '% Visão' },
+      { id: 'santuario_b', name: '🐺 Santuário das Bestas', level: 1, scale: [0, 10, 20, 30, 45], unit: '% Poder Feras' },
+      { id: 'arcanum_t', name: '🔮 Torre de Arcanum', level: 1, scale: ['Centro Mágico Básico', 'Magia Avançada', 'Centro Mágico Avançado', 'Grande Centro Mágico', 'Centro Supremo de Arcanum'], unit: '' }
+    ];
+
+    const costs = [
+      { ouro: 100, madeira: 50, ferro: 0 },   // I -> II (150% mult)
+      { ouro: 200, madeira: 100, ferro: 0 },  // II -> III (200% mult)
+      { ouro: 350, madeira: 150, ferro: 50 }, // III -> IV (300% mult)
+      { ouro: 600, madeira: 250, ferro: 100 } // IV -> V (450% mult)
+    ];
+
+    // GENERAIS NOMEADOS DE TODAS AS FACÇÕES
+    const generaisData = [
+      // NHAROK
+      { nome: "Mordek Ossuário", faccao: "Nharok", classe: "Místico", bonus: "+15% Magia", habilidade: "✨ PODER ARCANO", xp: 4 },
+      { nome: "Vespera Noctis", faccao: "Nharok", classe: "Estrategista", bonus: "+10% Todas as tropas", habilidade: "♟️ ADAPTAÇÃO", xp: 2 },
+      { nome: "Drazan Blackwall", faccao: "Nharok", classe: "Guardião", bonus: "+15% Defesa", habilidade: "🧱 MURALHA VIVA (+10% Fortificações)", xp: 0 },
+      { nome: "Korvin Corvo-Negro", faccao: "Nharok", classe: "Cavalaria", bonus: "+15% Cavalaria", habilidade: "🐎 CARGA PESADA (+5% Cavalaria Pesada)", xp: 1 },
+
+      // AURELION
+      { nome: "Aldric Pedra-Viva", faccao: "Aurelion", classe: "Guardião", bonus: "+15% Defesa", habilidade: "🧱 MURALHA VIVA (+10% Fortificações)", xp: 3 },
+      { nome: "Thalia Quebra-Cerco", faccao: "Aurelion", classe: "Estrategista", bonus: "+10% Todas as tropas", habilidade: "♟️ ADAPTAÇÃO", xp: 0 },
+      { nome: "Garran Ferrofirme", faccao: "Aurelion", classe: "Cavalaria", bonus: "+15% Cavalaria", habilidade: "🐎 CARGA PESADA (+5% Cavalaria Pesada)", xp: 2 },
+      { nome: "Elira Lança-Dourada", faccao: "Aurelion", classe: "Mística", bonus: "+15% Magia", habilidade: "✨ PODER ARCANO", xp: 1 },
+
+      // DRAKMOR
+      { nome: "Kaelis Senhor das Feras", faccao: "Drakmor", classe: "Especialista em Feras", bonus: "+15% Feras/Criaturas", habilidade: "🐺 DOMINADOR DE BESTAS", xp: 5 },
+      { nome: "Rhaegar Presa Ígnea", faccao: "Drakmor", classe: "Especialista em Criaturas/Fogo", bonus: "+15% Vulcânicos/Fogo", habilidade: "🔥 CHAMA DRACÔNICA", xp: 2 },
+
+      // OUTROS
+      { nome: "Nyxara Selvafogo", faccao: "Outros", classe: "Mística/Estrategista", bonus: "+15% Magia de Fogo", habilidade: "🌋 FOGO SELVAGEM", xp: 0 },
+      { nome: "Torren Céu-Partido", faccao: "Outros", classe: "Guardião", bonus: "+15% Defesa", habilidade: "⚡ TEMPESTADE DE AÇO", xp: 1 }
+    ];
+
+    function renderBuildings() {
+      const container = document.getElementById('buildings-grid');
+      container.innerHTML = '';
+
+      buildings.forEach((b, idx) => {
+        const cost = b.level < 5 ? costs[b.level - 1] : null;
+        const currentVal = b.scale[b.level - 1];
+        
+        let bonusText = typeof currentVal === 'number' ? `${b.id === 'hospital' ? '-' : '+'}${currentVal}${b.unit}` : currentVal;
+        let costText = cost ? `Custo Nível ${romanize(b.level+1)}: ${cost.ouro} Ouro, ${cost.madeira} Madeira` + (cost.ferro ? `, ${cost.ferro} Ferro` : '') : 'Nível Máximo Alcançado (V - 450%)';
+
+        const card = document.createElement('div');
+        card.className = 'building-card';
+        card.innerHTML = `
+          <h4>${b.name} (Nível ${romanize(b.level)})</h4>
+          <div class="bonus-text">Efeito Atual: ${bonusText}</div>
+          <div class="cost-text">${costText}</div>
+          <button class="btn-action" ${b.level >= 5 ? 'disabled style="opacity:0.5"' : ''} onclick="upgradeBuilding(${idx})">⬆️ Evoluir Edificação</button>
+        `;
+        container.appendChild(card);
+      });
     }
+
+    function upgradeBuilding(index) {
+      const b = buildings[index];
+      if (b.level >= 5) return;
+
+      const c = costs[b.level - 1];
+      if (ouro < c.ouro || madeira < c.madeira || ferro < c.ferro) {
+        alert("⚠️ Recursos insuficientes! Verifique os custos em Ouro, Madeira e Ferro.");
+        return;
+      }
+
+      ouro -= c.ouro;
+      madeira -= c.madeira;
+      ferro -= c.ferro;
+      b.level++;
+
+      if (b.id === 'santuario_b') {
+        document.getElementById('santuario-nivel-txt').innerText = "Nível " + romanize(b.level);
+        document.getElementById('santuario-bonus-txt').innerText = "+" + b.scale[b.level - 1] + "%";
+      }
+
+      updateHUD();
+      renderBuildings();
+      alert(`🏰 ${b.name} evoluída com sucesso para o Nível ${romanize(b.level)}!`);
+    }
+
+    function renderGenerais(filtro = 'todos') {
+      const container = document.getElementById('generais-grid');
+      container.innerHTML = '';
+
+      generaisData.forEach((g, idx) => {
+        if (filtro !== 'todos' && g.faccao !== filtro) return;
+
+        let bonusXP = Math.min(Math.floor(g.xp / 2) * 5, 15);
+
+        const card = document.createElement('div');
+        card.className = 'general-card';
+        card.innerHTML = `
+          <span class="faction-tag">${g.faccao}</span>
+          <h4>${g.nome}</h4>
+          <div style="font-size:0.82rem;"><b>Especialidade:</b> ${g.classe} (${g.bonus})</div>
+          <div class="ability">Habilidade: ${g.habilidade}</div>
+          <div style="font-size:0.82rem; margin-top:4px;">
+            <b>Vitórias/XP:</b> <span id="xp-val-${idx}">${g.xp}</span> | <b>Bônus de XP:</b> <span id="xp-bonus-${idx}">+${bonusXP}%</span>
+          </div>
+          <button class="btn-action" style="margin-top:6px;" onclick="adicionarVitoriaGeneral(${idx})">🏆 Registrar Vitória (+1 XP)</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function adicionarVitoriaGeneral(index) {
+      generaisData[index].xp++;
+      let g = generaisData[index];
+      let bonusXP = Math.min(Math.floor(g.xp / 2) * 5, 15);
+
+      const elXp = document.getElementById(`xp-val-${index}`);
+      const elBonus = document.getElementById(`xp-bonus-${index}`);
+      if(elXp) elXp.innerText = g.xp;
+      if(elBonus) elBonus.innerText = `+${bonusXP}%`;
+    }
+
+    function filtrarGenerais(faccao, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderGenerais(faccao);
+    }
+
+    function recrutarLendario(nome, reqSantuario, reqOuro, reqArcanum) {
+      const santuarioObj = buildings.find(b => b.id === 'santuario_b');
+      if (santuarioObj.level < reqSantuario) {
+        alert(`❌ Requer Santuário das Bestas Nível ${romanize(reqSantuario)} ou superior!`);
+        return;
+      }
+      if (ouro < reqOuro) {
+        alert(`❌ Ouro insuficiente! Requer ${reqOuro} Ouro.`);
+        return;
+      }
+
+      ouro -= reqOuro;
+      updateHUD();
+      alert(`🐉 Criatura Lendária '${nome}' convocada com sucesso para o seu exército!`);
+    }
+
+    function calcularCalculadoraCompleta() {
+      // 1. Poder Base
+      const soldados = parseFloat(document.getElementById('unit-soldado').value) || 0;
+      const arqueiros = parseFloat(document.getElementById('unit-arqueiro').value) || 0;
+      const cavaleiros = parseFloat(document.getElementById('unit-cavaleiro').value) || 0;
+      const magos = parseFloat(document.getElementById('unit-mago').value) || 0;
+
+      const poderBase = (soldados * 1.0) + (arqueiros * 1.1) + (cavaleiros * 1.6) + (magos * 2.0);
+      document.getElementById('out-poder-base').innerText = poderBase.toFixed(1);
+
+      // 2 - 8. Modificadores
+      const contra = parseFloat(document.getElementById('mod-contra').value) || 0;
+      const terreno = parseFloat(document.getElementById('mod-terreno').value) || 0;
+      const general = parseFloat(document.getElementById('mod-general').value) || 0;
+      const estrategia = parseFloat(document.getElementById('mod-estrategia').value) || 0;
+      const moral = parseFloat(document.getElementById('mod-moral').value) || 0;
+      const sinergia = parseFloat(document.getElementById('mod-sinergia').value) || 0;
+      const clima = parseFloat(document.getElementById('mod-clima').value) || 0;
+
+      const somaBonus = contra + terreno + general + estrategia + moral + sinergia + clima;
+      const isLendario = document.getElementById('mod-lendario-chk').checked;
+
+      let bonusEfetivo = somaBonus;
+      let notaLimitador = "";
+
+      if (!isLendario) {
+        if (bonusEfetivo > 60) {
+          bonusEfetivo = 60;
+          notaLimitador = " (⚠️ Bônus travado no teto máximo de +60%)";
+        }
+      } else {
+        notaLimitador = " (✨ Habilidade Lendária ultrapassa a trava de +60%)";
+      }
+
+      if (bonusEfetivo < -50) {
+        bonusEfetivo = -50;
+        notaLimitador = " (⚠️ Penalidade travada no piso de -50%)";
+      }
+
+      const poderFinal = poderBase * (1 + (bonusEfetivo / 100));
+
+      document.getElementById('out-resultado-9etapas').innerHTML = `
+        • <b>Soma dos Bônus (Etapas 2 a 8):</b> ${somaBonus >= 0 ? '+' : ''}${somaBonus}%<br>
+        • <b>Bônus Efetivo Aplicado:</b> ${bonusEfetivo >= 0 ? '+' : ''}${bonusEfetivo}%${notaLimitador}<br>
+        • ⚔️ <b>PODER FINAL COMBINADO: ${poderFinal.toFixed(1)}</b>
+      `;
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-menu .nav-item').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(viewId);
+      if(target) target.classList.add('active');
+
+      const titles = {
+        'construcoes': 'Construções Militares',
+        'santuario': 'Santuário das Bestas',
+        'calculadora': 'Calculadora de Poder de Batalha (9 Etapas)',
+        'generais': 'Generais & Experiência',
+        'locais': 'Locais Favoráveis (Terrenos)',
+        'logistica': 'Logística & Comida'
+      };
+      if(titles[viewId]) document.getElementById('page-title').innerText = titles[viewId];
+    }
+
+    function updateHUD() {
+      document.getElementById('hud-ouro').innerText = ouro;
+      document.getElementById('hud-comida').innerText = comida;
+      document.getElementById('hud-madeira').innerText = madeira;
+      document.getElementById('hud-ferro').innerText = ferro;
+      document.getElementById('hud-prestigio').innerText = prestigios;
+    }
+
+    function proximoTurno() {
+      comida = Math.max(0, comida - 50);
+      ouro += 100;
+      updateHUD();
+      alert("☀ Turno Avançado! Consumo de Comida: -50 | Renda de Ouro: +100");
+    }
+
+    function romanize(num) {
+      const lookup = {1:'I', 2:'II', 3:'III', 4:'IV', 5:'V'};
+      return lookup[num] || num;
+    }
+
+    // INICIALIZAÇÃO
+    renderBuildings();
+    renderGenerais();
+    calcularCalculadoraCompleta();
+    updateHUD();
   </script>
 </body>
 </html>
